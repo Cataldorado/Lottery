@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.8/jquery.validate.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <!--Build a form with 4 inputs and a button that calls a function getInputs() min=1, max=10 all field required - Each button press if valid costs the user 2 dollars-->
+
+        <form action="javascript:checkTextBoxes();" class="form-horizontal" id="myForm">
+            <fieldset>
+                <!-- Form Name -->
+                <legend>Lottery</legend>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="">1st Number</label>
+                    <div class="col-md-1">
+                        <input id="num1" type="number" min="1" max="30" class="form-control input-md" required>
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="">2nd Number</label>
+                    <div class="col-md-1">
+                        <input id="num2" type="number" min="1" max="30" placeholder="" class="form-control input-md" required="">
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="">3rd Number</label>
+                    <div class="col-md-1">
+                        <input id="num3" type="number" min="1" max="30" placeholder="" class="form-control input-md" required="">
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="">4th Number</label>
+                    <div class="col-md-1">
+                        <input id="num4" type="number" min="1" max="30" placeholder="" class="form-control input-md" required="">
+
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+
+                    <div class="col-md-4 cntrol-label"></div>
+                    <div class="col-md-4">
+                        <div id="buttReplace">
+                        <button id="validate" name="idHere" class="btn btn-primary">Play</button>
+                            </div>
+                    </div>
+                    <!--</div>-->
+
+            </fieldset>
+        </form>
+
+        <div id="show"></div>
+        <div id="showInput"></div>
+            <div id="result"></div>
+        <div id="showWallet"></div>
+            <div id="userNumbers"></div>
+            <div id="casinoNumbers"></div>
+
+        <script>
+            var wallet = 10;
+            var userInput = [];
+            var matches = [];
+            var arr = [];
+
+
+            function getInputs() {
+                //creates unique variable for each form input collected from user
+                var num1elem = document.getElementById('num1');
+                var num2elem = document.getElementById('num2');
+                var num3elem = document.getElementById('num3');
+                var num4elem = document.getElementById('num4');
+                //pushes collected input values into an array called userInput
+                userInput = [
+        num1elem.value,
+        num2elem.value,
+        num3elem.value,
+        num4elem.value
+                        ];
+                purse = wallet -2;
+                purse = localStorage.getItem("showWallet");
+                localStorage.setItem("showWallet", purse);
+                console.log(purse);
+
+            }
+
+            function checkTextBoxes() {
+
+                var form = document.getElementById("myForm");
+                // Start by looping through each text element one by one
+                for (i = 0; i < form.elements.length; i++) {
+                    // For each form element, check if it is a number type
+                    if (form.elements[i].type == "number") {
+                        // If so, get its value
+                        var num1 = form.elements[i].value;
+                        // now loop through remaining elements, checking if they are numbers and get their value
+                        for (j = i + 1; j < form.elements.length; j++) {
+                            if (form.elements[j].type == "number") {
+                                var num2 = form.elements[j].value;
+                                // If the value being compared is equal to any other text elements, show an alert
+                                if (num1 == num2) {
+                                    alert("Duplicate found! Number: " + i + " and Number: " + j);
+                                    return;
+                                } else {
+                                    getInputs();
+                                    getCompNums();
+
+                                    console.log(userInput);
+                                    document.getElementById('showInput').innerHTML = '<strong>' + 'Your Numbers:' + '</strong>' + ' ' + userInput;
+                                    checkMatch();
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            function getCompNums() {
+
+                while (arr.length < 4) {
+                    var randomnumber = Math.ceil(Math.random() * 10)
+                    var found = false;
+                    for (var i = 0; i < arr.length; i++) {
+                        if (arr[i] == randomnumber) {
+                            found = true;
+                            break
+                        }
+                    }
+                    if (!found) arr[arr.length] = randomnumber;
+                }
+                console.log(arr);
+                document.getElementById('show').innerHTML = '<strong>' + 'Casino Numbers:' + '</strong>' + ' ' + arr;
+
+
+
+            }
+
+function checkMatch() {
+    for (i = 0; i < userInput.length; i++) {
+        for (j = 0; j < arr.length; j++) {
+            if (arr[j] === parseInt(userInput[i])) {
+                
+                matches.push(userInput[i]);
+
+}
+
+}
+
+}
+console.log(matches);
+console.log(resultsCompare () );
+
+}
+
+            function resultsCompare(){
+                for (var i in matches) {
+                if (matches.length === 1){
+                    console.log('You have 1 match');
+                    document.getElementById('result').innerHTML = '<strong>' + 'Congratulations, you have 1 match' + '</strong>';
+                    var purse = wallet +=2;
+                    arr = [];
+                    userInput = [];
+                 
+                    return;
+                }
+                if (matches.length === 2){
+                    console.log('You have 2 matches');
+                    document.getElementById('result').innerHTML = '<strong>' + 'Congratulations, you have 2 matches' + '</strong>';
+                    var purse = wallet +=4;
+                    arr = [];
+                    userInput = [];
+                    return;
+            }
+                    if (matches.length === 3){
+                    console.log('You have 3 matches');
+                    document.getElementById('result').innerHTML = '<strong>' + 'Congratulations, you have 3 matches' + '</strong>';
+                    arr = [];
+                        userInput = [];
+                        return;
+            }
+                    if (matches.length === 4){
+                    console.log('You have 4 matches');
+                    document.getElementById('result').innerHTML = '<strong>' + 'Congratulations, you have 4 matches' + '</strong>';
+                    arr = [];
+                    userInput = [];
+                        return;
+                        
+            }
+                    
+                    else{document.getElementById('result').innerHTML = '<strong>' + 'Sorry, you have 0 matches' + '</strong>';}
+                    return( getInputs() );
+                
+            }
+            }
+            
+            
+                
+        
+        </script>
